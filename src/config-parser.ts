@@ -61,6 +61,9 @@ function warnIgnoredInputs(
   usedInputName: string,
   ignoredInputNames: string[],
 ) {
+  if (ignoredInputNames.length === 0) {
+    return;
+  }
   core.warning(
     `The ${usedInputName} input will be used. If it cannot be parsed, the action will fail. The ${joinInputNames(ignoredInputNames)} ${ignoredInputNames.length === 1 ? "input" : "inputs"} will be ignored.`,
   );
@@ -158,9 +161,10 @@ export async function parseInputToObject(
       formatInputs.map((input) => input.inputName),
     );
   } else if (!fileInput && formatInputs.length > 1) {
+    const [usedInput, ...ignoredInputs] = formatInputs;
     warnIgnoredInputs(
-      formatInputs[0]!.inputName,
-      formatInputs.slice(1).map((input) => input.inputName),
+      usedInput.inputName,
+      ignoredInputs.map((input) => input.inputName),
     );
   }
 
