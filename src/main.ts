@@ -239,6 +239,9 @@ const releases = await listReleases(octokit, repoSet);
 
 const versionsMap = (await parseInputToObject("typst-versions")) as any;
 if (versionsMap) {
+  core.warning(
+    "The typst-version and executable-name inputs will be ignored when any typst-versions-* input is set.",
+  );
   await ensureMultipleTypstInstalled(versionsMap, releases);
 } else {
   const versionsMapStr = core.getInput("typst-versions-map");
