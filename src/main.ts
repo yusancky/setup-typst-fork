@@ -240,13 +240,12 @@ const typstVersion = core.getInput("typst-version");
 const executableName = core.getInput("executable-name");
 
 const versionsMap = (await parseInputToObject("typst-versions")) as any;
-if (
-  versionsMap &&
-  (typstVersion !== "latest" || executableName !== "typst")
-) {
-  core.warning(
-    "The typst-version and executable-name inputs will be ignored when any typst-versions-* input is set.",
-  );
+if (versionsMap) {
+  if (typstVersion !== "latest" || executableName !== "typst") {
+    core.warning(
+      "The typst-version and executable-name inputs will be ignored when any typst-versions-* input is set.",
+    );
+  }
   await ensureMultipleTypstInstalled(versionsMap, releases);
 } else {
   const versionsMapStr = core.getInput("typst-versions-map");
@@ -265,11 +264,10 @@ if (
     }
     await ensureMultipleTypstInstalled(versionsMap, releases);
   } else {
-    const version = typstVersion;
     const allowPrereleases = core.getBooleanInput("allow-prereleases");
     const versionExact = await getExactVersion(
       releases,
-      version,
+      typstVersion,
       allowPrereleases,
     );
     await ensureTypstInstalled(versionExact, executableName);
