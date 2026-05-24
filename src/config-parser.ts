@@ -52,7 +52,7 @@ function joinInputNames(inputNames: string[]): string {
     return "";
   }
   if (inputNames.length === 1) {
-    return inputNames[0] ?? "";
+    return inputNames[0];
   }
   return `${inputNames.slice(0, -1).join(", ")} and ${inputNames[inputNames.length - 1]}`;
 }
@@ -159,7 +159,7 @@ export async function parseInputToObject(
     );
   } else if (!fileInput && formatInputs.length > 1) {
     warnIgnoredInputs(
-      formatInputs[0].inputName,
+      formatInputs[0]!.inputName,
       formatInputs.slice(1).map((input) => input.inputName),
     );
   }
