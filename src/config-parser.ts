@@ -48,10 +48,22 @@ const INPUT_FORMATS: SupportedFormat[] = [
 ];
 
 function joinInputNames(inputNames: string[]): string {
-  if (inputNames.length <= 1) {
+  if (inputNames.length === 0) {
+    return "";
+  }
+  if (inputNames.length === 1) {
     return inputNames[0] ?? "";
   }
   return `${inputNames.slice(0, -1).join(", ")} and ${inputNames[inputNames.length - 1]}`;
+}
+
+function warnIgnoredInputs(
+  usedInputName: string,
+  ignoredInputNames: string[],
+) {
+  core.warning(
+    `The ${usedInputName} input will be used. If it cannot be parsed, the action will fail. The ${joinInputNames(ignoredInputNames)} ${ignoredInputNames.length === 1 ? "input" : "inputs"} will be ignored.`,
+  );
 }
 
 /**
@@ -141,14 +153,14 @@ export async function parseInputToObject(
   });
 
   if (fileInput && formatInputs.length > 0) {
-    const ignoredInputNames = formatInputs.map((input) => input.inputName);
-    core.warning(
-      `The ${baseKey}-file input will be used. If it cannot be parsed, the action will fail. The ${joinInputNames(ignoredInputNames)} ${ignoredInputNames.length === 1 ? "input" : "inputs"} will be ignored.`,
+    warnIgnoredInputs(
+      `${baseKey}-file`,
+      formatInputs.map((input) => input.inputName),
     );
   } else if (!fileInput && formatInputs.length > 1) {
-    const ignoredInputNames = formatInputs.slice(1).map((input) => input.inputName);
-    core.warning(
-      `The ${formatInputs[0].inputName} input will be used. If it cannot be parsed, the action will fail. The ${joinInputNames(ignoredInputNames)} ${ignoredInputNames.length === 1 ? "input" : "inputs"} will be ignored.`,
+    warnIgnoredInputs(
+      formatInputs[0].inputName,
+      formatInputs.slice(1).map((input) => input.inputName),
     );
   }
 
