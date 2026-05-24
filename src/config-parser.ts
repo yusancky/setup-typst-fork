@@ -47,6 +47,13 @@ const INPUT_FORMATS: SupportedFormat[] = [
   "hcl",
 ];
 
+function joinInputNames(inputNames: string[]): string {
+  if (inputNames.length <= 1) {
+    return inputNames[0] ?? "";
+  }
+  return `${inputNames.slice(0, -1).join(", ")} and ${inputNames[inputNames.length - 1]}`;
+}
+
 /**
  * Parses a string in any supported configuration format into a JSON-compatible JavaScript object.
  *
@@ -134,15 +141,14 @@ export async function parseInputToObject(
   });
 
   if (fileInput && formatInputs.length > 0) {
+    const ignoredInputNames = formatInputs.map((input) => input.inputName);
     core.warning(
-      `The ${baseKey}-file input will be used. The ${formatInputs.map((input) => input.inputName).join(" and ")} inputs will be ignored.`,
+      `The ${baseKey}-file input will be used. The ${joinInputNames(ignoredInputNames)} ${ignoredInputNames.length === 1 ? "input" : "inputs"} will be ignored.`,
     );
   } else if (!fileInput && formatInputs.length > 1) {
+    const ignoredInputNames = formatInputs.slice(1).map((input) => input.inputName);
     core.warning(
-      `The ${formatInputs[0].inputName} input will be used. The ${formatInputs
-        .slice(1)
-        .map((input) => input.inputName)
-        .join(" and ")} inputs will be ignored.`,
+      `The ${formatInputs[0].inputName} input will be used. The ${joinInputNames(ignoredInputNames)} ${ignoredInputNames.length === 1 ? "input" : "inputs"} will be ignored.`,
     );
   }
 
