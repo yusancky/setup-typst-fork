@@ -143,12 +143,12 @@ export async function parseInputToObject(
   if (fileInput && formatInputs.length > 0) {
     const ignoredInputNames = formatInputs.map((input) => input.inputName);
     core.warning(
-      `The ${baseKey}-file input will be used. The ${joinInputNames(ignoredInputNames)} ${ignoredInputNames.length === 1 ? "input" : "inputs"} will be ignored.`,
+      `The ${baseKey}-file input will be used. If it cannot be parsed, the action will fail. The ${joinInputNames(ignoredInputNames)} ${ignoredInputNames.length === 1 ? "input" : "inputs"} will be ignored.`,
     );
   } else if (!fileInput && formatInputs.length > 1) {
     const ignoredInputNames = formatInputs.slice(1).map((input) => input.inputName);
     core.warning(
-      `The ${formatInputs[0].inputName} input will be used. The ${joinInputNames(ignoredInputNames)} ${ignoredInputNames.length === 1 ? "input" : "inputs"} will be ignored.`,
+      `The ${formatInputs[0].inputName} input will be used. If it cannot be parsed, the action will fail. The ${joinInputNames(ignoredInputNames)} ${ignoredInputNames.length === 1 ? "input" : "inputs"} will be ignored.`,
     );
   }
 
